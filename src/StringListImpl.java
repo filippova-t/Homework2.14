@@ -71,13 +71,12 @@ public class StringListImpl implements StringList {
 
     @Override
     public boolean contains(String item) {
-        //for (int i = 0; i < size; i++) {
-         //   if (item.equals(strings[i])) {
-          //      return true;
-         //   }
-    //    }
-     //   return false;
-        return indexOf(item) != 0;
+        for (int i = 0; i < size; i++) {
+            if (item.equals(strings[i])) {
+                return true;
+           }
+        }
+        return false;
     }
 
     @Override
