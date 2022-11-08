@@ -4,10 +4,10 @@ import exception.*;
 import java.util.Arrays;
 
 public class IntListImpl implements IntList{
-    public final Integer[] numbers;
+    public Integer[] numbers;
     private int size;
 
-    public IntListImpl() {numbers = new Integer [10];
+    public IntListImpl() {numbers = new Integer [3];
     }
 
     public IntListImpl(int newSize) {numbers = new Integer [newSize];
@@ -23,7 +23,7 @@ public class IntListImpl implements IntList{
 
     @Override
     public Integer add(int index, Integer item) {
-        checkIndex(index);
+        checkIndexIsNotNegative(index);
         checkItem(item);
         checkSize();
         if (index == size) {
@@ -36,10 +36,16 @@ public class IntListImpl implements IntList{
         size++;
         return item;
     }
+    @Override
+    public void grow() {
+        numbers = Arrays.copyOf(numbers, size*15/10);
+    }
+
 
     @Override
     public Integer set(int index, Integer item) {
-        checkIndex(index);
+        checkIndexIsNotNegative(index);
+        checkIndexIsNotMoreThanSize(index);
         checkItem(item);
         numbers[index] = item;
         return item;
@@ -52,7 +58,7 @@ public class IntListImpl implements IntList{
         if (index == -1) {
             throw new ElementNotFoundException("Данный элемент не найден в списке");
         }
-        System.arraycopy(numbers, index+1, numbers, index, size - index + 1);
+        System.arraycopy(numbers, index+1, numbers, index, size - index);
 
         size--;
         return item;
@@ -60,9 +66,10 @@ public class IntListImpl implements IntList{
 
     @Override
     public Integer remove(int index) {
-        checkIndex(index);
+        checkIndexIsNotNegative(index);
+        checkIndexIsNotMoreThanSize(index);
         Integer item = numbers [index];
-        System.arraycopy(numbers, index+1, numbers, index, size - index + 1);
+        System.arraycopy(numbers, index+1, numbers, index, size - index);
 
         size--;
         return item;
@@ -70,9 +77,9 @@ public class IntListImpl implements IntList{
 
     @Override
     public boolean contains(Integer item) {
-        //Integer[] numbersCopy = toArray();
-        sortInsertion();
-        return binarySearch(item);
+       Integer [] numbersCopy = toArray();
+        quickSort(numbersCopy, 0, numbersCopy.length-1);
+        return binarySearch(numbersCopy, item);
     }
 
     @Override
@@ -97,7 +104,8 @@ public class IntListImpl implements IntList{
 
     @Override
     public Integer get(int index) {
-        checkIndex(index);
+        checkIndexIsNotNegative(index);
+        checkIndexIsNotMoreThanSize(index);
         return numbers[index];
     }
 
@@ -132,48 +140,77 @@ public class IntListImpl implements IntList{
 
     private void checkItem (Integer item) {
         if (item == null){
-            throw new StringIsNullException("Добавляемый элемент равен null");
+            throw new ElementIsNullException("Добавляемый элемент равен null");
 
         }
     }
 
     private void checkSize(){
         if (size == numbers.length) {
-            throw new StringListOverflowException("Массив заполнен полностью");
+            grow();
         }
     }
 
-    private void checkIndex (int index) {
-        if (index < 0 || index > size) {
-            throw new IllegalIndexException("Индекс отрицательный либо превышает длину массива");
+    private void checkIndexIsNotNegative (int index) {
+        if (index < 0) {
+            throw new IllegalIndexException("Индекс не может быть отрицательным");
+        }
+    }
+    private void checkIndexIsNotMoreThanSize (int index) {
+        if (index >= size) {
+            throw new IllegalIndexException("Индекс не может превышать длину массива");
         }
     }
 
 
     @Override
-    public void sortInsertion() {
+    public void sort() {
+        quickSort(numbers, 0, numbers.length -1);
+    }
 
-        for (int i = 1; i < size; i++) {
-            int temp = numbers[i];
-            int j = i;
-            while (j > 0 && numbers[j - 1] >= temp) {
-                numbers[j] = numbers[j - 1];
-                j--;
+
+    public void quickSort(Integer[] arr, int begin, int end) {
+            if (begin < end) {
+                int partitionIndex = partition(arr, begin, end);
+
+                quickSort(arr, begin, partitionIndex - 1);
+                quickSort(arr, partitionIndex + 1, end);
             }
-            numbers[j] = temp;
         }
+
+        private static int partition(Integer [] arr, int begin, int end) {
+            Integer pivot = arr[end];
+            int i = (begin - 1);
+
+            for (int j = begin; j < end; j++) {
+                if (arr[j] <= pivot) {
+                    i++;
+
+                    swapElements(arr, i, j);
+                }
+            }
+
+            swapElements(arr, i + 1, end);
+            return i + 1;
+        }
+
+
+    private static void swapElements(Integer[] arr, int left, int right) {
+        Integer temp = arr[left];
+        arr[left] = arr[right];
+        arr[right] = temp;
     }
 
     @Override
-    public boolean binarySearch(Integer element) {
-        sortInsertion();
+    public boolean binarySearch(Integer[] numbers, Integer element) {
+        //quickSort(numbers, numbers[0], numbers[size-1]);
         int min = 0;
         int max = size - 1;
         while (min <= max) {
             int mid = (min + max) / 2;
 
             if (element.equals(numbers[mid])) {
-               return true;
+                return true;
             }
             if (element < numbers[mid]) {
                 max = mid - 1;
@@ -183,4 +220,6 @@ public class IntListImpl implements IntList{
         }
         return false;
     }
+
+
 }

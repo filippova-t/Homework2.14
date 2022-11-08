@@ -1,5 +1,6 @@
 import exception.ElementNotFoundException;
 import exception.IllegalIndexException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -7,6 +8,11 @@ import java.util.Arrays;
 
 class IntListImplTest {
     public final IntList intList = new IntListImpl();
+
+    @AfterEach
+    public void afterEach () {
+        intList.clear();
+    }
 
     @Test
     void testAdd() {
@@ -29,6 +35,8 @@ class IntListImplTest {
         Assertions.assertEquals(intList.get(1), 10);
         Assertions.assertEquals(intList.get(2), 1);
     }
+
+
     @Test
     void testSet() {
         intList.add(0, 0);
@@ -122,12 +130,12 @@ class IntListImplTest {
 
 
     @Test
-    void sortSelection() {
+    void sort() {
         intList.add(0, 0);
         intList.add(1, 480);
         intList.add(2, 348);
         intList.add(3, 2);
-        intList.sortInsertion();
+        intList.sort();
         Assertions.assertEquals(Arrays.toString(intList.toArray()), "[0, 2, 348, 480]");
 
     }
@@ -138,8 +146,10 @@ class IntListImplTest {
         intList.add(1, 480);
         intList.add(2, 348);
         intList.add(3, 2);
-        Assertions.assertEquals(intList.binarySearch(480), true);
-        Assertions.assertEquals(intList.binarySearch( 481), false);
+        Assertions.assertEquals(intList.binarySearch((intList.toArray()),480), true);
+        Assertions.assertEquals(intList.binarySearch((intList.toArray()),481), false);
 
     }
+
+
 }

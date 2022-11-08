@@ -13,6 +13,9 @@ public interface IntList {
     // в качестве результата выполнения.
     Integer add(int index, Integer item);
 
+
+    void grow();
+
     // Установить элемент
     // на определенную позицию,
     // затерев существующий.
@@ -75,14 +78,8 @@ public interface IntList {
     // и вернуть его.
     Integer[] toArray();
 
-    //самая быстрая сортировка
- //   void sortInsertion(Integer[] numbers);
 
-    void sortInsertion();
+    void sort();
 
-    //бинарный поиск
-   // boolean binarySearch(Integer[] numbers, Integer element);
-
-
-    boolean binarySearch(Integer element);
+    boolean binarySearch(Integer[] numbers, Integer element);
 }

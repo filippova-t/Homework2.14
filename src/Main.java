@@ -63,17 +63,24 @@ public class Main {
         stringList.remove(2);
         System.out.println(Arrays.toString(stringList.toArray()));
         System.out.println( stringList.get(1));
-        stringList.clear();
-        System.out.println(stringList.size());
+
+
+
 
         IntList intList = new IntListImpl();
         intList.add(0);
         intList.add(10);
         intList.add(5);
         intList.add(22);
+        intList.add(4, 43);
+        intList.add(2);
         System.out.println(Arrays.toString(intList.toArray()));
-        intList.sortInsertion();
+        System.out.println("intList.contains(43) = " + intList.contains(43));
+        System.out.println("intList.contains(44) = " + intList.contains(44));
         System.out.println(Arrays.toString(intList.toArray()));
+        intList.sort();
+        System.out.println(Arrays.toString(intList.toArray()));
+
 
         System.out.println("hello");
         Integer[] arr = generateRandomArray();

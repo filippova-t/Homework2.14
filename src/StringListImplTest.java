@@ -1,10 +1,17 @@
 import exception.ElementNotFoundException;
 import exception.IllegalIndexException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class StringListImplTest {
     public final StringList stringList = new StringListImpl();
+
+
+    @AfterEach
+    public void afterEach () {
+        stringList.clear();
+    }
 
     @Test
     void testAdd() {

@@ -53,7 +53,7 @@ public class StringListImpl implements StringList {
        if (index == -1) {
            throw new ElementNotFoundException("Данная строка не найдена в списке");
        }
-       System.arraycopy(strings, index+1, strings, index, size - index + 1);
+       System.arraycopy(strings, index+1, strings, index, size - index);
 
         size--;
         return item;
@@ -63,7 +63,7 @@ public class StringListImpl implements StringList {
     public String remove(int index) {
         checkIndex(index);
         String item = strings[index];
-        System.arraycopy(strings, index+1, strings, index, size - index + 1);
+        System.arraycopy(strings, index+1, strings, index, size - index);
 
         size--;
         return item;
@@ -71,16 +71,13 @@ public class StringListImpl implements StringList {
 
     @Override
     public boolean contains(String item) {
-        for (int i = 0; i < size; i++) {
-            if (item.equals(strings[i])) {
-                return true;
-           }
-        }
-        return false;
+        return indexOf(item) != -1;
+
     }
 
     @Override
     public int indexOf(String item) {
+        checkItem (item);
         for (int i = 0; i < size; i++) {
             if (item.equals(strings[i])) {
               return i;
@@ -91,6 +88,7 @@ public class StringListImpl implements StringList {
 
     @Override
     public int lastIndexOf(String item) {
+        checkItem (item);
         for (int i = size - 1; i >= 0; i--) {
             if (item.equals(strings[i])) {
                 return i;
@@ -136,7 +134,7 @@ public class StringListImpl implements StringList {
 
     private void checkItem (String item) {
         if (item == null){
-            throw new StringIsNullException("Добавляемый элемент равен null");
+            throw new ElementIsNullException("Добавляемый элемент равен null");
 
         }
     }
@@ -148,7 +146,7 @@ public class StringListImpl implements StringList {
     }
 
     private void checkIndex (int index) {
-        if (index < 0 || index > size) {
+        if (index < 0 || index >= size) {
             throw new IllegalIndexException("Индекс отрицательный либо превышает длину массива");
         }
     }
